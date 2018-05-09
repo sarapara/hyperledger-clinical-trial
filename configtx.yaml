@@ -61,15 +61,17 @@ Organizations:
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/consilx.com/msp
 
+
     - &PfizerOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: PfizerOrg
+        Name: PfizerMSP
 
         # ID to load the MSP definition as
         ID: PfizerMSP
 
         MSPDir: crypto-config/peerOrganizations/pfizer.com/msp
+
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
@@ -78,10 +80,13 @@ Organizations:
             - Host: peer0.pfizer.com
               Port: 7051
 
+
+
+
     - &ManipalHospitalOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: ManipalHospitalOrg
+        Name: ManipalHospitalMSP
 
         # ID to load the MSP definition as
         ID: ManipalHospitalMSP

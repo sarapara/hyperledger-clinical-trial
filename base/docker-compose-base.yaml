@@ -11,7 +11,7 @@ services:
     container_name: orderer.consilx.com
     image: hyperledger/fabric-orderer:$IMAGE_TAG
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
@@ -21,13 +21,15 @@ services:
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt, /var/hyperledger/peers/pfizer/tls/ca.crt, /var/hyperledger/peers/manipalhospital/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
     - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
     - ../crypto-config/ordererOrganizations/consilx.com/orderers/orderer.consilx.com/msp:/var/hyperledger/orderer/msp
     - ../crypto-config/ordererOrganizations/consilx.com/orderers/orderer.consilx.com/tls/:/var/hyperledger/orderer/tls
+    - ../crypto-config/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls/:/var/hyperledger/peers/pfizer/tls
+    - ../crypto-config/peerOrganizations/manipalhospital.org/peers/peer0.manipalhospital.org/tls/:/var/hyperledger/peers/manipalhospital/tls
     - orderer.consilx.com:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
@@ -45,8 +47,8 @@ services:
       - CORE_PEER_LOCALMSPID=PfizerMSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../crypto-config/peerOrganizations/peer0.pfizer.com/peers/peer0.pfizer.com/msp:/etc/hyperledger/fabric/msp
-        - ../crypto-config/peerOrganizations/peer0.pfizer.com/peers/peer0.pfizer.com/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls:/etc/hyperledger/fabric/tls
         - peer0.pfizer.com:/var/hyperledger/production
     ports:
       - 7051:7051
@@ -65,8 +67,8 @@ services:
       - CORE_PEER_LOCALMSPID=PfizerMSP
     volumes:
         - /var/run/:/host/var/run/
-        - ../crypto-config/peerOrganizations/peer0.pfizer.com/peers/peer1.pfizer.com/msp:/etc/hyperledger/fabric/msp
-        - ../crypto-config/peerOrganizations/peer0.pfizer.com/peers/peer1.pfizer.com/tls:/etc/hyperledger/fabric/tls
+        - ../crypto-config/peerOrganizations/pfizer.com/peers/peer1.pfizer.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/pfizer.com/peers/peer1.pfizer.com/tls:/etc/hyperledger/fabric/tls
         - peer1.pfizer.com:/var/hyperledger/production
 
     ports:

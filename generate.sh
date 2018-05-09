@@ -84,7 +84,7 @@ function generateChannelArtifacts() {
   echo "#######    Generating anchor peer update for PfizerOrg   ##########"
   echo "#################################################################"
   set -x
-  configtxgen -profile DrugAPfizerChannel -outputAnchorPeersUpdate ./channel-artifacts/PfizerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg PfizerOrg
+  configtxgen -profile DrugAPfizerChannel -outputAnchorPeersUpdate ./channel-artifacts/PfizerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg PfizerMSP
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -98,7 +98,7 @@ function generateChannelArtifacts() {
   echo "#################################################################"
   set -x
   configtxgen -profile DrugAPfizerChannel -outputAnchorPeersUpdate \
-  ./channel-artifacts/ManipalHospitalMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ManipalHospitalOrg
+  ./channel-artifacts/ManipalHospitalMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ManipalHospitalMSP
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -108,16 +108,8 @@ function generateChannelArtifacts() {
   echo
 }
 
-# Obtain the OS and Architecture string that will be used to select the correct
-# native binaries for your platform
-OS_ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
-# timeout duration - the duration the CLI should wait for a response from
-# another container before giving up
-CLI_TIMEOUT=10
-# default for delay between commands
-CLI_DELAY=3
-# channel name defaults to "mychannel"
-CHANNEL_NAME="drugAchannel"
+# channel name defaults to "drugchannel"
+CHANNEL_NAME="drugchannel"
 
 while getopts "h?m:c:t:d:f:s:l:i:" opt; do
   case "$opt" in
@@ -127,15 +119,11 @@ while getopts "h?m:c:t:d:f:s:l:i:" opt; do
     ;;
     c)  CHANNEL_NAME=$OPTARG
     ;;
-    t)  CLI_TIMEOUT=$OPTARG
-    ;;
-    d)  CLI_DELAY=$OPTARG
-    ;;
   esac
 done
 
 # Announce what was requested
-echo "${EXPMODE} with channel '${CHANNEL_NAME}' and CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
+echo "${EXPMODE} with channel '${CHANNEL_NAME}'"
 
 # ask for confirmation to proceed
 askProceed

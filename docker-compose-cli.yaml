@@ -6,7 +6,7 @@
 version: '2'
 
 volumes:
-  orderer.example.com:
+  orderer.consilx.com:
   peer0.pfizer.com:
   peer1.pfizer.com:
   peer0.manipalhospital.org:
@@ -17,11 +17,11 @@ networks:
 
 services:
 
-  orderer.example.com:
+  orderer.consilx.com:
+    container_name: orderer.consilx.com
     extends:
       file:   base/docker-compose-base.yaml
-      service: orderer.example.com
-    container_name: orderer.example.com
+      service: orderer.consilx.com
     networks:
       - ctn
 
@@ -65,16 +65,16 @@ services:
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=DEBUG
       - CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.manipalhospital.org:7051
-      - CORE_PEER_LOCALMSPID=ManipalHospitalMSP
+      - CORE_PEER_ADDRESS=peer0.pfizer.org:7051
+      - CORE_PEER_LOCALMSPID=PfizerMSP
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manipalhospital.org/peers/peer0.manipalhospital.org/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manipalhospital.org/peers/peer0.manipalhospital.org/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manipalhospital.org/peers/peer0.manipalhospital.org/tls/ca.crt
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manipalhospital.org/users/Admin@manipalhospital.org/msp
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pfizer.com/users/Admin@pfizer.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
@@ -84,7 +84,7 @@ services:
         - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     depends_on:
-      - orderer.example.com
+      - orderer.consilx.com
       - peer0.pfizer.com
       - peer1.pfizer.com
       - peer0.manipalhospital.org
