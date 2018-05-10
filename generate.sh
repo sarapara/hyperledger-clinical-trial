@@ -18,6 +18,36 @@ function askProceed () {
   esac
 }
 
+function replacePrivateKey () {
+
+  ARCH=`uname -s | grep Darwin`
+  if [ "$ARCH" == "Darwin" ]; then
+    OPTS="-it"
+  else
+    OPTS="-i"
+  fi
+
+  # Copy the template to the file that will be modified to add the private key
+  cp docker-compose-cli-template.yaml docker-compose-cli.yaml
+
+  # The next steps will replace the template's contents with the
+  # actual values of the private key file names for the two CAs.
+  CURRENT_DIR=$PWD
+  cd crypto-config/peerOrganizations/pfizer.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+  cd crypto-config/peerOrganizations/manipalhospital.org/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
+  # If MacOSX, remove the temporary backup of the docker-compose file
+  if [ "$ARCH" == "Darwin" ]; then
+    rm docker-compose-cli.yamlt
+  fi
+}
+
 # Generates Org certs using cryptogen tool
 function generateCerts (){
   which cryptogen
@@ -131,6 +161,8 @@ askProceed
 mkdir -p channel-artifacts
 rm -fr channel-artifacts/*
 rm -fr crypto-config/*
+rm docker-compose-cli.yaml
 
 generateCerts
+replacePrivateKey
 generateChannelArtifacts
