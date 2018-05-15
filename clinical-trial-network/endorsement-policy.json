@@ -1,0 +1,17 @@
+{
+    "identities": [
+        {
+            "role": {
+                "name": "member",
+                "mspId": "ManipalHospitalMSP"
+            }
+        }
+    ],
+    "policy": {
+        "1-of": [
+            {
+                "signed-by": 0
+            }
+        ]
+    }
+}

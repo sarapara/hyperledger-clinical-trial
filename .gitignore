@@ -1,0 +1,7 @@
+.DS_Store
+.env
+*.card 
+channel-artifacts/
+clinical-trial-network@0.0.1.bna
+crypto-config/
+docker-compose-cli.yaml

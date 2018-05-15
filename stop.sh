@@ -18,7 +18,7 @@ IMAGETAG="latest"
 # Tear down running network
 function networkDown () {
   docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH down --volumes
-  docker-compose -f $COMPOSE_FILE down --volumes
+  IMAGE_TAG=$IMAGETAG docker-compose -f $COMPOSE_FILE down --volumes
   # Don't remove the generated artifacts -- note, the ledgers are always removed
  clearContainers
  removeUnwantedImages

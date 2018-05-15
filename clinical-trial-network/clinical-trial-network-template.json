@@ -1,0 +1,138 @@
+{
+    "name": "clinical-trial-network",
+    "x-type": "hlfv1",
+    "version": "1.0.0",
+    "client": {
+        "organization": "INSERT_ORG_NAME",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300",
+                    "eventHub": "300",
+                    "eventReg": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "channels": {
+        "drugchannel": {
+            "orderers": [
+                "orderer.consilx.com"
+            ],
+            "peers": {
+                "peer0.pfizer.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                },
+                "peer1.pfizer.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                },
+                "peer0.manipalhospital.org": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                },
+                "peer1.manipalhospital.org": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "eventSource": true
+                }
+            }
+        }
+    },
+    "organizations": {
+        "Pfizer": {
+            "mspid": "PfizerMSP",
+            "peers": [
+                "peer0.pfizer.com",
+                "peer1.pfizer.com"
+            ],
+            "certificateAuthorities": [
+                "ca.pfizer.com"
+            ]
+        },
+        "ManipalHospital": {
+            "mspid": "ManipalHospitalMSP",
+            "peers": [
+                "peer0.manipalhospital.org",
+                "peer1.manipalhospital.org"
+            ],
+            "certificateAuthorities": [
+                "ca.manipalhospital.org"
+            ]
+        }
+    },
+    "orderers": {
+        "orderer.consilx.com": {
+            "url": "grpcs://localhost:7050",
+            "grpcOptions": {
+                "ssl-target-name-override": "orderer.consilx.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORDERER_CA_CERT"
+            }
+        }
+    },
+    "peers": {
+        "peer0.pfizer.com": {
+            "url": "grpcs://localhost:7051",
+            "eventUrl": "grpcs://localhost:7053",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.pfizer.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG1_CA_CERT"
+            }
+        },
+        "peer1.pfizer.com": {
+            "url": "grpcs://localhost:8051",
+            "eventUrl": "grpcs://localhost:8053",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.pfizer.com"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG1_CA_CERT"
+            }
+        },
+        "peer0.manipalhospital.org": {
+            "url": "grpcs://localhost:9051",
+            "eventUrl": "grpcs://localhost:9053",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.manipalhospital.org"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG2_CA_CERT"
+            }
+        },
+        "peer1.manipalhospital.org": {
+            "url": "grpcs://localhost:10051",
+            "eventUrl": "grpcs://localhost:10053",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.manipalhospital.org"
+            },
+            "tlsCACerts": {
+                "pem": "INSERT_ORG2_CA_CERT"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.pfizer.com": {
+            "url": "https://localhost:7054",
+            "caName": "ca-pfizer",
+            "httpOptions": {
+                "verify": false
+            }
+        },
+        "ca.manipalhospital.org": {
+            "url": "https://localhost:8054",
+            "caName": "ca-manipalhospital",
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

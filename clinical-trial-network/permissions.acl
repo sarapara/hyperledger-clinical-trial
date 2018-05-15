@@ -1,0 +1,192 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+rule SiteAdminPatientRule {
+    description: "Grant business network administrators full access to doctor participants"
+    participant: "org.hyperledger.composer.system.NetworkAdmin#siteadmin"
+    operation: READ
+    resource: "com.consilx.biznet.Patient"
+    action: ALLOW
+}
+
+rule SiteAdminConsentRule {
+    description: "Grant business network administrators full access to doctor participants"
+    participant: "org.hyperledger.composer.system.NetworkAdmin#siteadmin"
+    operation: READ
+    resource: "com.consilx.biznet.Consent"
+    action: ALLOW
+}
+
+rule SiteAdminDoctorRule {
+    description: "Grant business network administrators full access to doctor participants"
+    participant: "org.hyperledger.composer.system.NetworkAdmin#siteadmin"
+    operation: ALL
+    resource: "com.consilx.biznet.Doctor"
+    action: ALLOW
+}
+
+rule PharmaAdminConsentRule {
+    description: "Grant business network administrators full access to doctor participants"
+    participant: "org.hyperledger.composer.system.NetworkAdmin#pharmaadmin"
+    operation: READ
+    resource: "com.consilx.biznet.Consent"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule ReadAccessForSystemResourcesRule {
+    description: "Grant read access to all participants on systems"
+    participant: "**"
+    operation: READ
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule DoctorReadHistorian {
+    description: "Grant business network administrators full access to system resources"
+    participant: "com.consilx.biznet.Doctor"
+    operation: CREATE
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule PatientReadHistorian {
+    description: "Grant business network administrators full access to system resources"
+    participant: "com.consilx.biznet.Patient"
+    operation: CREATE
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule DoctorOnboardPatientRule {
+    description: "Allow doctors to onboard patient "
+    participant: "com.consilx.biznet.Doctor"
+    operation: CREATE
+    resource: "com.consilx.biznet.Patient"
+    action: ALLOW
+}
+
+rule DoctorReadTheirPatientRule {
+    description: "Allow doctors to read their patient "
+    participant(p): "com.consilx.biznet.Doctor"
+    operation: READ
+    resource(r): "com.consilx.biznet.Patient"
+    condition: (r.doctor.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule PatientReadTheirDoctorRule {
+    description: "Allow patient to read their doctor"
+    participant(p): "com.consilx.biznet.Patient"
+    operation: READ
+    resource(r): "com.consilx.biznet.Doctor"
+    condition: (p.doctor.getIdentifier() === r.getIdentifier())
+    action: ALLOW
+}
+
+rule DoctorReadTheirRecordRule {
+    description: "Allow doctors to read their record "
+    participant(p): "com.consilx.biznet.Doctor"
+    operation: READ
+    resource(r): "com.consilx.biznet.Doctor"
+    condition: (r.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule DoctorAccessToSetupConsentTransaction {
+    description: "Allow doctors to setup consent through transaction only"
+    participant: "com.consilx.biznet.Doctor"
+    operation: CREATE
+    resource: "com.consilx.biznet.SetupConsent"
+    action: ALLOW
+}
+
+rule DoctorSetupConsentRule {
+    description: "Allow doctors to setup consent through transaction only"
+    participant: "com.consilx.biznet.Doctor"
+    operation: CREATE
+    resource: "com.consilx.biznet.Consent"
+    transaction: "com.consilx.biznet.SetupConsent"
+    action: ALLOW
+}
+
+rule DoctorViewTheirPatientsConsentRule {
+    description: "Allow doctors to read their patients consent"
+    participant(p): "com.consilx.biznet.Doctor"
+    operation: READ
+    resource(r): "com.consilx.biznet.Consent"
+    condition: (r.patient.doctor.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule PatientAccessToProvideConsentTransaction {
+    description: "Allow Patient to  provide consent transaction"
+    participant: "com.consilx.biznet.Patient"
+    operation: CREATE
+    resource: "com.consilx.biznet.ProvideConsent"
+    action: ALLOW
+}
+
+rule PatientProvideConsentRule {
+    description: "Allow Patient to give consent through transaction only "
+    participant(p): "com.consilx.biznet.Patient"
+    operation: UPDATE
+    resource(r): "com.consilx.biznet.Consent"
+    transaction(tx): "com.consilx.biznet.ProvideConsent"
+    condition: (r.patient.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule PatientReadTheirConsentRule {
+    description: "Allow Patient to access their consent record"
+    participant(p): "com.consilx.biznet.Patient"
+    operation: READ
+    resource(r): "com.consilx.biznet.Consent"
+    condition: (r.patient.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule PatientReadTheirRecord {
+    description: "Allow Patient to access their  record"
+    participant(p): "com.consilx.biznet.Patient"
+    operation: READ
+    resource(r): "com.consilx.biznet.Patient"
+    condition: (r.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule DoctorAccessToCoSignConsentTransaction {
+    description: "Allow Doctor to  cosign consent transaction"
+    participant: "com.consilx.biznet.Doctor"
+    operation: CREATE
+    resource: "com.consilx.biznet.CoSignConsent"
+    action: ALLOW
+}
+
+rule DoctorConsentCosignRule {
+    description: "Allow cosign to consent "
+    participant(p): "com.consilx.biznet.Doctor"
+    operation: UPDATE
+    resource(r): "com.consilx.biznet.Consent"
+    transaction(tx): "com.consilx.biznet.CoSignConsent"
+    condition: (r.status === "ACCEPTED" && r.patient.doctor.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}

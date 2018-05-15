@@ -32,6 +32,8 @@ function replacePrivateKey () {
 
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
+
+
   CURRENT_DIR=$PWD
   cd crypto-config/peerOrganizations/pfizer.com/ca/
   PRIV_KEY=$(ls *_sk)
