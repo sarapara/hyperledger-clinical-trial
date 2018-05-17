@@ -16,7 +16,7 @@
         }
     },
     "channels": {
-        "drugAchannel": {
+        "drugachannel": {
             "orderers": [
                 "orderer.consilx.com"
             ],
@@ -26,17 +26,7 @@
                     "chaincodeQuery": true,
                     "eventSource": true
                 },
-                "peer1.pfizer.com": {
-                    "endorsingPeer": true,
-                    "chaincodeQuery": true,
-                    "eventSource": true
-                },
                 "peer0.manipalhospital.org": {
-                    "endorsingPeer": true,
-                    "chaincodeQuery": true,
-                    "eventSource": true
-                },
-                "peer1.manipalhospital.org": {
                     "endorsingPeer": true,
                     "chaincodeQuery": true,
                     "eventSource": true
@@ -48,8 +38,7 @@
         "Pfizer": {
             "mspid": "PfizerMSP",
             "peers": [
-                "peer0.pfizer.com",
-                "peer1.pfizer.com"
+                "peer0.pfizer.com"
             ],
             "certificateAuthorities": [
                 "ca.pfizer.com"
@@ -58,8 +47,7 @@
         "ManipalHospital": {
             "mspid": "ManipalHospitalMSP",
             "peers": [
-                "peer0.manipalhospital.org",
-                "peer1.manipalhospital.org"
+                "peer0.manipalhospital.org"
             ],
             "certificateAuthorities": [
                 "ca.manipalhospital.org"
@@ -88,31 +76,11 @@
                 "pem": "INSERT_ORG1_CA_CERT"
             }
         },
-        "peer1.pfizer.com": {
-            "url": "grpcs://localhost:8051",
-            "eventUrl": "grpcs://localhost:8053",
-            "grpcOptions": {
-                "ssl-target-name-override": "peer1.pfizer.com"
-            },
-            "tlsCACerts": {
-                "pem": "INSERT_ORG1_CA_CERT"
-            }
-        },
         "peer0.manipalhospital.org": {
             "url": "grpcs://localhost:9051",
             "eventUrl": "grpcs://localhost:9053",
             "grpcOptions": {
                 "ssl-target-name-override": "peer0.manipalhospital.org"
-            },
-            "tlsCACerts": {
-                "pem": "INSERT_ORG2_CA_CERT"
-            }
-        },
-        "peer1.manipalhospital.org": {
-            "url": "grpcs://localhost:10051",
-            "eventUrl": "grpcs://localhost:10053",
-            "grpcOptions": {
-                "ssl-target-name-override": "peer1.manipalhospital.org"
             },
             "tlsCACerts": {
                 "pem": "INSERT_ORG2_CA_CERT"

@@ -79,7 +79,7 @@ Organizations:
             # encoded in the genesis block in the Application section context
             - Host: peer0.pfizer.com
               Port: 7051
-              
+
     - &ManipalHospitalOrg
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment

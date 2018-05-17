@@ -140,8 +140,8 @@ function generateChannelArtifacts() {
   echo
 }
 
-# channel name defaults to "drugAchannel"
-CHANNEL_NAME="drugAchannel"
+# channel name defaults to "drugachannel"
+CHANNEL_NAME="drugachannel"
 
 while getopts "h?m:c:t:d:f:s:l:i:" opt; do
   case "$opt" in

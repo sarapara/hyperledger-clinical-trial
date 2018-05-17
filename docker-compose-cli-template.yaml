@@ -8,9 +8,7 @@ version: '2'
 volumes:
   orderer.consilx.com:
   peer0.pfizer.com:
-  # peer1.pfizer.com:
   peer0.manipalhospital.org:
-  # peer1.manipalhospital.org:
 
 networks:
   ctn:
@@ -67,14 +65,6 @@ services:
     networks:
       - ctn
 
-  # peer1.pfizer.com:
-  #   container_name: peer1.pfizer.com
-  #   extends:
-  #     file:  base/docker-compose-base.yaml
-  #     service: peer1.pfizer.com
-  #   networks:
-  #     - ctn
-
   peer0.manipalhospital.org:
     container_name: peer0.manipalhospital.org
     extends:
@@ -82,14 +72,6 @@ services:
       service: peer0.manipalhospital.org
     networks:
       - ctn
-
-  # peer1.manipalhospital.org:
-  #   container_name: peer1.manipalhospital.org
-  #   extends:
-  #     file:  base/docker-compose-base.yaml
-  #     service: peer1.manipalhospital.org
-  #   networks:
-  #     - ctn
 
   cli:
     container_name: cli
@@ -122,8 +104,7 @@ services:
       - ca1
       - orderer.consilx.com
       - peer0.pfizer.com
-      # - peer1.pfizer.com
       - peer0.manipalhospital.org
-      # - peer1.manipalhospital.org
+
     networks:
       - ctn
