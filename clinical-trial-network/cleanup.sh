@@ -13,8 +13,6 @@ rm -rf siteadmin
 rm -rf pharmaadmin
 
 rm -fr $HOME/.composer
-rm -rf ./tmp/composer/pfizer
-rm -rf ./tmp/composer/manipalhospital
+rm -rf ./tmp
 rm ./clinical-trial-network.json
 rm -f *.card
-rm ./tmp/composer/ca-orderer.txt
