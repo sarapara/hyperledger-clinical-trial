@@ -6,8 +6,8 @@ OS_ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/window
 CLI_TIMEOUT=10
 # default for delay between commands
 CLI_DELAY=3
-# channel name defaults to "drugchannel"
-CHANNEL_NAME="drugchannel"
+# channel name defaults to "drugAchannel"
+CHANNEL_NAME="drugAchannel"
 # use this as the default docker-compose yaml definition
 COMPOSE_FILE=docker-compose-cli.yaml
 # use golang as the default language for chaincode

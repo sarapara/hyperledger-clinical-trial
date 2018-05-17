@@ -103,7 +103,7 @@ function generateChannelArtifacts() {
   echo "### Generating channel configuration transaction 'channel.tx' ###"
   echo "#################################################################"
   set -x
-  configtxgen -profile DrugAPfizerChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
+  configtxgen -profile DrugAChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -116,7 +116,7 @@ function generateChannelArtifacts() {
   echo "#######    Generating anchor peer update for PfizerOrg   ##########"
   echo "#################################################################"
   set -x
-  configtxgen -profile DrugAPfizerChannel -outputAnchorPeersUpdate ./channel-artifacts/PfizerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg PfizerMSP
+  configtxgen -profile DrugAChannel -outputAnchorPeersUpdate ./channel-artifacts/PfizerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg PfizerMSP
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -129,7 +129,7 @@ function generateChannelArtifacts() {
   echo "#######    Generating anchor peer update for ManipalHospitalOrg   ##########"
   echo "#################################################################"
   set -x
-  configtxgen -profile DrugAPfizerChannel -outputAnchorPeersUpdate \
+  configtxgen -profile DrugAChannel -outputAnchorPeersUpdate \
   ./channel-artifacts/ManipalHospitalMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ManipalHospitalMSP
   res=$?
   set +x
@@ -140,8 +140,8 @@ function generateChannelArtifacts() {
   echo
 }
 
-# channel name defaults to "drugchannel"
-CHANNEL_NAME="drugchannel"
+# channel name defaults to "drugAchannel"
+CHANNEL_NAME="drugAchannel"
 
 while getopts "h?m:c:t:d:f:s:l:i:" opt; do
   case "$opt" in

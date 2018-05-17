@@ -4,7 +4,7 @@ CHANNEL_NAME="$1"
 DELAY="$2"
 LANGUAGE="$3"
 TIMEOUT="$4"
-: ${CHANNEL_NAME:="drugchannel"}
+: ${CHANNEL_NAME:="drugAchannel"}
 : ${DELAY:="3"}
 : ${LANGUAGE:="node"}
 : ${TIMEOUT:="10"}
@@ -43,7 +43,7 @@ function createChannel() {
 
 joinChannel () {
 	for org in 1 2; do
-	    for peer in 0 1; do
+	    for peer in 0; do
 		joinChannelWithRetry $peer $org
 		echo "===================== peer${peer}.org${org} joined on the channel \"$CHANNEL_NAME\" ===================== "
 		sleep $DELAY

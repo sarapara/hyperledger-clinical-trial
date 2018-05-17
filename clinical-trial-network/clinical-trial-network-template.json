@@ -16,7 +16,7 @@
         }
     },
     "channels": {
-        "drugchannel": {
+        "drugAchannel": {
             "orderers": [
                 "orderer.consilx.com"
             ],
