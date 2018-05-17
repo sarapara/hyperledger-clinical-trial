@@ -1,7 +1,9 @@
 .DS_Store
 .env
-*.card 
+*.card
 channel-artifacts/
-clinical-trial-network@0.0.1.bna
 crypto-config/
 docker-compose-cli.yaml
+clinical-trial-network/clinical-trial-network.json
+clinical-trial-network/*admin/
+clinical-trial-network/tmp/
