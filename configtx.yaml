@@ -37,6 +37,15 @@ Profiles:
                 - *ManipalHospitalOrg
             Capabilities:
                 <<: *ApplicationCapabilities
+    DrugBChannel:
+      Consortium: SampleConsortium
+      Application:
+          <<: *ApplicationDefaults
+          Organizations:
+              - *PfizerOrg
+              - *ManipalHospitalOrg
+          Capabilities:
+              <<: *ApplicationCapabilities
 
 ################################################################################
 #
