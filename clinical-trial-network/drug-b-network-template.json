@@ -1,5 +1,5 @@
 {
-    "name": "clinical-trial-network",
+    "name": "drug-b-network",
     "x-type": "hlfv1",
     "version": "1.0.0",
     "client": {
@@ -16,7 +16,7 @@
         }
     },
     "channels": {
-        "drugachannel": {
+        "drugbchannel": {
             "orderers": [
                 "orderer.consilx.com"
             ],
