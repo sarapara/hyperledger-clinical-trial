@@ -30,17 +30,17 @@ CURRENT_DIR=$PWD
 echo "Setting up ca key for Pfizer in connection file ...."
 awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' ../crypto-config/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls/ca.crt > ./tmp/composer/pfizer/ca-pfizer.txt
 cd ./tmp/composer/pfizer
-perl -pe 's/INSERT_ORG1_CA_CERT/`cat ca-pfizer.txt`/ge' -i ../../../clinical-trial-network-template.json
+perl -pe 's/INSERT_ORG1_CA_CERT/`cat ca-pfizer.txt`/ge' -i ../../../clinical-trial-network.json
 cd "$CURRENT_DIR"
 echo "Setting up ca key for ManipalHospital in connection file ...."
 awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' ../crypto-config/peerOrganizations/manipalhospital.org/peers/peer0.manipalhospital.org/tls/ca.crt > ./tmp/composer/manipalhospital/ca-manipalhospital.txt
 cd ./tmp/composer/manipalhospital
-perl -pe 's/INSERT_ORG2_CA_CERT/`cat ca-manipalhospital.txt`/ge' -i ../../../clinical-trial-network-template.json
+perl -pe 's/INSERT_ORG2_CA_CERT/`cat ca-manipalhospital.txt`/ge' -i ../../../clinical-trial-network.json
 cd "$CURRENT_DIR"
 echo "Setting up ca key for Orderer in connection file ...."
 awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' ../crypto-config/ordererOrganizations/consilx.com/orderers/orderer.consilx.com/tls/ca.crt > ./tmp/composer/ca-orderer.txt
 cd ./tmp/composer
-perl -pe 's/INSERT_ORDERER_CA_CERT/`cat ca-orderer.txt`/ge' -i ../../clinical-trial-network-template.json
+perl -pe 's/INSERT_ORDERER_CA_CERT/`cat ca-orderer.txt`/ge' -i ../../clinical-trial-network.json
 cd "$CURRENT_DIR"
 
 echo "Setting up Pfizer connection file ...."
