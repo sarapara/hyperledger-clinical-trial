@@ -1,6 +1,5 @@
 
 NETWORK_NAME="$1"
-DELAY=3
 # ./cleanup.sh $NETWORK_NAME
 
 # mkdir -p ./tmp/composer/pfizer
