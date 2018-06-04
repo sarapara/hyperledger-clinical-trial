@@ -2,7 +2,7 @@
   "engines": {
     "composer": "^0.19.4"
   },
-  "name": "drug-b-network",
+  "name": "clinical-trial-network",
   "version": "0.0.1",
   "description": "Network for clinical trial",
   "scripts": {
