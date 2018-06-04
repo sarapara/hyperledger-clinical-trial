@@ -99,91 +99,49 @@ function generateChannelArtifacts() {
     exit 1
   fi
   echo
-  echo "######################################################################"
-  echo "### Generating channel configuration transaction 'drugachannel.tx' ###"
-  echo "######################################################################"
+  echo "#################################################################"
+  echo "### Generating channel configuration transaction 'channel.tx' ###"
+  echo "#################################################################"
   set -x
-  configtxgen -profile DrugAChannel -outputCreateChannelTx ./channel-artifacts/drugachannel.tx -channelID $CHANNEL_NAME1
+  configtxgen -profile DrugAChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
   res=$?
   set +x
   if [ $res -ne 0 ]; then
-    echo "Failed to generate channel configuration transaction-$CHANNEL_NAME1..."
-    exit 1
-  fi
-  echo
-  echo "######################################################################"
-  echo "### Generating channel configuration transaction 'drugbchannel.tx' ###"
-  echo "######################################################################"
-  set -x
-  configtxgen -profile DrugBChannel -outputCreateChannelTx ./channel-artifacts/drugbchannel.tx -channelID $CHANNEL_NAME2
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate channel configuration transaction-$CHANNEL_NAME2..."
-    exit 1
-  fi
-
-
-  echo
-  echo "######################################################################################"
-  echo "#######    Generating anchor peer update for PfizerOrg for $CHANNEL_NAME1   ##########"
-  echo "######################################################################################"
-  set -x
-  configtxgen -profile DrugAChannel -outputAnchorPeersUpdate ./channel-artifacts/$CHANNEL_NAME1-PfizerMSPanchors.tx -channelID $CHANNEL_NAME1 -asOrg PfizerMSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for PfizerOrg($CHANNEL_NAME1)..."
+    echo "Failed to generate channel configuration transaction..."
     exit 1
   fi
 
   echo
-  echo "###############################################################################################"
-  echo "#######    Generating anchor peer update for ManipalHospitalOrg for $CHANNEL_NAME1   ##########"
-  echo "###############################################################################################"
+  echo "#################################################################"
+  echo "#######    Generating anchor peer update for PfizerOrg   ##########"
+  echo "#################################################################"
+  set -x
+  configtxgen -profile DrugAChannel -outputAnchorPeersUpdate ./channel-artifacts/PfizerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg PfizerMSP
+  res=$?
+  set +x
+  if [ $res -ne 0 ]; then
+    echo "Failed to generate anchor peer update for PfizerOrg..."
+    exit 1
+  fi
+
+  echo
+  echo "#################################################################"
+  echo "#######    Generating anchor peer update for ManipalHospitalOrg   ##########"
+  echo "#################################################################"
   set -x
   configtxgen -profile DrugAChannel -outputAnchorPeersUpdate \
-  ./channel-artifacts/$CHANNEL_NAME1-ManipalHospitalMSPanchors.tx -channelID $CHANNEL_NAME1 -asOrg ManipalHospitalMSP
+  ./channel-artifacts/ManipalHospitalMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ManipalHospitalMSP
   res=$?
   set +x
   if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for ManipalHospitalOrg($CHANNEL_NAME1)..."
+    echo "Failed to generate anchor peer update for ManipalHospitalOrg..."
     exit 1
   fi
-
-  echo
-  echo "######################################################################################"
-  echo "#######    Generating anchor peer update for PfizerOrg for $CHANNEL_NAME2   ##########"
-  echo "######################################################################################"
-  set -x
-  configtxgen -profile DrugBChannel -outputAnchorPeersUpdate ./channel-artifacts/$CHANNEL_NAME2-PfizerMSPanchors.tx -channelID $CHANNEL_NAME2 -asOrg PfizerMSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for PfizerOrg($CHANNEL_NAME2)..."
-    exit 1
-  fi
-
-  echo
-  echo "###############################################################################################"
-  echo "#######    Generating anchor peer update for ManipalHospitalOrg for $CHANNEL_NAME2   ##########"
-  echo "###############################################################################################"
-  set -x
-  configtxgen -profile DrugBChannel -outputAnchorPeersUpdate \
-  ./channel-artifacts/$CHANNEL_NAME2-ManipalHospitalMSPanchors.tx -channelID $CHANNEL_NAME2 -asOrg ManipalHospitalMSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for ManipalHospitalOrg($CHANNEL_NAME2)..."
-    exit 1
-  fi
-
   echo
 }
 
 # channel name defaults to "drugachannel"
-CHANNEL_NAME1="drugachannel"
-CHANNEL_NAME2="drugbchannel"
+CHANNEL_NAME="drugachannel"
 
 while getopts "h?m:c:t:d:f:s:l:i:" opt; do
   case "$opt" in
@@ -195,8 +153,9 @@ while getopts "h?m:c:t:d:f:s:l:i:" opt; do
     ;;
   esac
 done
+
 # Announce what was requested
-echo "${EXPMODE} with channel '${CHANNEL_NAME1}' & '${CHANNEL_NAME2}'"
+echo "${EXPMODE} with channel '${CHANNEL_NAME}'"
 
 # ask for confirmation to proceed
 askProceed
