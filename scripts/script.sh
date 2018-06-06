@@ -12,6 +12,12 @@ LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=5
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/consilx.com/orderers/orderer.consilx.com/msp/tlscacerts/tlsca.consilx.com-cert.pem
+PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pfizer.com/peers/peer0.pfizer.com/tls/ca.crt
+PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/manipalhospital.org/peers/peer0.manipalhospital.org/tls/ca.crt
+
+
+
+CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/node/"
 
 echo "Channel name : "$CHANNEL_NAME
 
@@ -85,7 +91,31 @@ joinChannel
 ## Set the anchor peers for each org in the channel
 echo "Updating anchor peers for pfizer org..."
 updateAnchorPeers 0 1
-echo "Updating anchor peers for manipal hospital org..."
+echo "Updating anchor peers for manipalhospital org..."
 updateAnchorPeers 0 2
 
+## Install chaincode on peer0.pfizer and peer0.manipalhospital
+echo "Installing chaincode on peer0.pfizer..."
+installChaincode 0 1
+echo "Install chaincode on peer0.manipalhospital..."
+installChaincode 0 2
+
+# Instantiate chaincode on peer0.manipalhospital
+echo "Instantiating chaincode on peer0.manipalhospital..."
+instantiateChaincode 0 2
+
+
+# Instantiate chaincode on peer0.manipalhospital
+echo "Instantiating chaincode on peer0.pfizer..."
+instantiateChaincode 0 1
+
+
+
+# Invoke chaincode on peer0.pfizer and peer0.manipalhospital
+echo "Sending invoke transaction on peer0.pfizer peer0.manipalhospital..."
+chaincodeInvoke 0 1
+
+# Query chaincode on peer0.pfizer
+echo "Querying chaincode on peer0.pfizer..."
+chaincodeQuery 0 2 d1
 exit 0

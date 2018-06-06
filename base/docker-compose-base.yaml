@@ -42,7 +42,7 @@ services:
     environment:
       - CORE_PEER_ID=peer0.pfizer.com
       - CORE_PEER_ADDRESS=peer0.pfizer.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.pfizer.com:7051
+      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.pfizer.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pfizer.com:7051
       - CORE_PEER_LOCALMSPID=PfizerMSP
     volumes:
@@ -84,7 +84,7 @@ services:
       - CORE_PEER_ID=peer0.manipalhospital.org
       - CORE_PEER_ADDRESS=peer0.manipalhospital.org:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.manipalhospital.org:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.manipalhospital.org:7051
+      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.manipalhospital.org:7051
       - CORE_PEER_LOCALMSPID=ManipalHospitalMSP
     volumes:
         - /var/run/:/host/var/run/
