@@ -60,37 +60,13 @@ joinChannelWithRetry () {
 	verifyResult $res "(Org1 = pfizer, Org2 = manipalhospital)After $MAX_RETRY attempts, peer${PEER}.org${ORG} has failed to Join the Channel"
 }
 
-updateAnchorPeers() {
-  PEER=$1
-  ORG=$2
-  setGlobals $PEER $ORG
-
-
-  if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-                set -x
-		peer channel update -o orderer.consilx.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
-		res=$?
-                set +x
-  else
-                set -x
-		peer channel update -o orderer.consilx.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
-		res=$?
-                set +x
-  fi
-	cat log.txt
-	verifyResult $res "Anchor peer update failed"
-	echo "===================== Anchor peers for org \"$CORE_PEER_LOCALMSPID\" on \"$CHANNEL_NAME\" is updated successfully ===================== "
-	sleep $DELAY
-	echo
-}
-
 installChaincode () {
 	PEER=$1
 	ORG=$2
 	setGlobals $PEER $ORG
 	VERSION=${3:-1.0}
         set -x
-	peer chaincode install -n mycc -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH} >&log.txt
+	peer chaincode install -n $CC_NAME -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH} >&log.txt
 	res=$?
         set +x
 	cat log.txt
@@ -110,12 +86,12 @@ instantiateChaincode () {
 	# the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode instantiate -o orderer.consilx.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR ('PfizerMSP.peer','ManipalHospitalMSP.peer')" >&log.txt
+		peer chaincode instantiate -o orderer.consilx.com:7050 -C $CHANNEL_NAME -n $CC_NAME -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init"]}' -P "OR ('PfizerMSP.peer','ManipalHospitalMSP.peer')" >&log.txt
 		res=$?
                 set +x
 	else
                 set -x
-		peer chaincode instantiate -o orderer.consilx.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init"]}' -P "OR ('PfizerMSP.peer','ManipalHospitalMSP.peer')" >&log.txt
+		peer chaincode instantiate -o orderer.consilx.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CC_NAME -l ${LANGUAGE} -v 1.0 -c '{"Args":["init"]}' -P "OR ('PfizerMSP.peer','ManipalHospitalMSP.peer')" >&log.txt
 		res=$?
                 set +x
 	fi
@@ -141,13 +117,13 @@ chaincodeQuery () {
      sleep $DELAY
      echo "Attempting to Query peer${PEER}.org${ORG} ...$(($(date +%s)-starttime)) secs"
      set -x
-     peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["readObject","d1"]}' >&log.txt
+     peer chaincode query -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["readObject","d1"]}' >&log.txt
 	 res=$?
      set +x
      test $res -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
 		 echo "Value = $VALUE"
-     test "$VALUE" = "$EXPECTED_RESULT" && let rc=0
-     
+     let rc=0
+
   done
   echo
   cat log.txt
@@ -170,12 +146,12 @@ chaincodeInvoke () {
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode invoke -o orderer.consilx.com:7050 -C $CHANNEL_NAME -n mycc -c '{"Args":["initDoctor","d1@mh.org","d1"]}' >&log.txt
+		peer chaincode invoke -o orderer.consilx.com:7050 -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["initDoctor","d1@mh.org","d1"]}' >&log.txt
 		res=$?
                 set +x
 	else
                 set -x
-		peer chaincode invoke -o orderer.consilx.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["initDoctor","d1@mh.org","d1"]}' >&log.txt
+		peer chaincode invoke -o orderer.consilx.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["initDoctor","d1@mh.org","d1"]}' >&log.txt
 		res=$?
                 set +x
 	fi

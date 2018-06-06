@@ -7,13 +7,20 @@ CLI_TIMEOUT=10
 # default for delay between commands
 CLI_DELAY=3
 # channel name defaults to "drugachannel"
-CHANNEL_NAME="drugachannel"
+CHANNEL_NAME1="drugachannel"
+CHANNEL_NAME2="verificationchannel"
 # use this as the default docker-compose yaml definition
 COMPOSE_FILE=docker-compose-cli.yaml
 # use golang as the default language for chaincode
 LANGUAGE=node
 # default image tag
 IMAGETAG="latest"
+
+CC_SRC_PATH1="/opt/gopath/src/github.com/chaincode/druga/node/"
+CC_SRC_PATH2="/opt/gopath/src/github.com/chaincode/verification/node/"
+
+CC1="ccone"
+CC2="cctwo"
 
 # Ask user for confirmation to proceed
 function askProceed () {
@@ -80,7 +87,8 @@ function networkUp () {
     exit 1
   fi
   # now run the end to end script
-  docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
+  docker exec cli scripts/script.sh $CHANNEL_NAME2 $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $CC_SRC_PATH2 $CC2
+  docker exec cli scripts/script.sh $CHANNEL_NAME1 $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $CC_SRC_PATH1 $CC1
 
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Test failed"
@@ -114,7 +122,7 @@ done
 
 
 # Announce what was requested
-echo "${EXPMODE} with channel '${CHANNEL_NAME}' and CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
+echo "${EXPMODE} with channel '${CHANNEL_NAME2}' and CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
 
 # ask for confirmation to proceed
 askProceed
