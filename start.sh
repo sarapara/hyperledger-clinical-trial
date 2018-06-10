@@ -96,31 +96,6 @@ function networkUp () {
   fi
 }
 
-
-while getopts "h?m:c:t:d:f:s:l:i:" opt; do
-  case "$opt" in
-    h|\?)
-      printHelp
-      exit 0
-    ;;
-    c)  CHANNEL_NAME=$OPTARG
-    ;;
-    t)  CLI_TIMEOUT=$OPTARG
-    ;;
-    d)  CLI_DELAY=$OPTARG
-    ;;
-    f)  COMPOSE_FILE=$OPTARG
-    ;;
-    s)  IF_COUCHDB=$OPTARG
-    ;;
-    l)  LANGUAGE=$OPTARG
-    ;;
-    i)  IMAGETAG=`uname -m`"-"$OPTARG
-    ;;
-  esac
-done
-
-
 # Announce what was requested
 echo "${EXPMODE} with channel '${CHANNEL_NAME2}' and CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
 

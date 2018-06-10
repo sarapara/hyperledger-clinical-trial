@@ -1,27 +1,3 @@
-/*
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-*/
-
-// ====CHAINCODE EXECUTION SAMPLES (CLI) ==================
-
-// ==== Invoke marbles ====
-// peer chaincode invoke -C myc1 -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
-// peer chaincode invoke -C myc1 -n marbles -c '{"Args":["initMarble","marble2","red","50","tom"]}'
-// peer chaincode invoke -C myc1 -n marbles -c '{"Args":["initMarble","marble3","blue","70","tom"]}'
-// peer chaincode invoke -C myc1 -n marbles -c '{"Args":["transferMarble","marble2","jerry"]}'
-// peer chaincode invoke -C myc1 -n marbles -c '{"Args":["transferMarblesBasedOnColor","blue","jerry"]}'
-// peer chaincode invoke -C myc1 -n marbles -c '{"Args":["delete","marble1"]}'
-
-// ==== Query marbles ====
-// peer chaincode query -C myc1 -n marbles -c '{"Args":["readMarble","marble1"]}'
-// peer chaincode query -C myc1 -n marbles -c '{"Args":["getMarblesByRange","marble1","marble3"]}'
-// peer chaincode query -C myc1 -n marbles -c '{"Args":["getHistoryForMarble","marble1"]}'
-
-// Rich Query (Only supported if CouchDB is used as state database):
-//   peer chaincode query -C myc1 -n marbles -c '{"Args":["queryMarblesByOwner","tom"]}'
-//   peer chaincode query -C myc1 -n marbles -c '{"Args":["queryMarbles","{\"selector\":{\"owner\":\"tom\"}}"]}'
 
 'use strict';
 const shim = require('fabric-shim');
@@ -143,61 +119,7 @@ let Chaincode = class {
     console.info('- end init patient');
   }
 
-  // ===============================================
-  // setupConsent - Setup consent for Patient
-  // ===============================================
-  async setupConsent(stub, args, thisClass) {
 
-    // consent.consentId = setupConsentData.consentId;
-    // consent.status = "NEW";
-    // consent.patient = setupConsentData.patient;
-    // consent.consentDocument = setupConsentData.consentDocument;
-
-    if (args.length != 3) {
-      throw new Error('Incorrect number of arguments. Expecting 2');
-    }
-    // ==== Input sanitation ====
-    console.info('--- start setup consent ---')
-    if (args[0].length <= 0) {
-      throw new Error('1st argument must be a non-empty string');
-    }
-    if (args[1].length <= 0) {
-      throw new Error('2nd argument must be a non-empty string');
-    }
-    if (args[2].length <= 0) {
-      throw new Error('3rd argument must be a non-empty string');
-    }
-
-    let consentId = args[0];
-    let patient = args[1].toLowerCase();
-    let consentDocument = args[2].toLowerCase();
-
-    // ==== Check if consent already exists ====
-    let consentState = await stub.getState(consentId);
-    if (consentState.toString()) {
-      throw new Error('This consent already exists: ' + consentId);
-    }
-
-    // ==== Ensure patient already exists ====
-    let patientState = await stub.getState(patient);
-    if (!patientState.toString()) {
-      throw new Error('This patient does not exist: ' + patientDoctor);
-    }
-
-    // ==== Create consent object and marshal to JSON ====
-    let consent = {};
-    consent.docType = 'consent';
-    consent.consentId = consentId;
-    consent.patient = patient;
-    consent.consentDocument = consentDocument;
-    consent.status = 'NEW';
-
-    // === Save consent to state ===
-    await stub.putState(consentId, Buffer.from(JSON.stringify(consent)));
-
-    // ==== consent saved. Return success ====
-    console.info('- end setup consent');
-  }
 
   // ===============================================
   // readObject - read a doctor/patient/consent from chaincode state

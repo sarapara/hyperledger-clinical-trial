@@ -28,7 +28,7 @@ function replacePrivateKey () {
   fi
 
   # Copy the template to the file that will be modified to add the private key
-  cp docker-compose-cli-template.yaml docker-compose-cli.yaml
+  cp ./docker-compose-cli-template.yaml ./docker-compose-cli.yaml
 
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.

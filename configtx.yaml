@@ -28,6 +28,9 @@ Profiles:
                 Organizations:
                     - *PfizerOrg
                     - *ManipalHospitalOrg
+            AnotherConsortium:
+                Organizations:
+                    - *ManipalHospitalOrg
     DrugAChannel:
         Consortium: SampleConsortium
         Application:
@@ -38,14 +41,13 @@ Profiles:
             Capabilities:
                 <<: *ApplicationCapabilities
     VerificationChannel:
-      Consortium: SampleConsortium
-      Application:
-          <<: *ApplicationDefaults
-          Organizations:
-              - *PfizerOrg
-              - *ManipalHospitalOrg
-          Capabilities:
-              <<: *ApplicationCapabilities
+        Consortium: AnotherConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ManipalHospitalOrg
+            Capabilities:
+                <<: *ApplicationCapabilities
 
 ################################################################################
 #
