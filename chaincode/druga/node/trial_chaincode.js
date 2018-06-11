@@ -81,12 +81,7 @@ let Chaincode = class {
       throw new Error('This doctor already exists: ' + docEmailId);
     }
 
-    // ==== Check if doctor already exists ====
-    let doctorState1 = await stub.invokeChaincode('cctwo',["readObject",docName],"verificationchannel");
-    console.log(doctorState1);
-    if (!doctorState1.toString()) {
-      throw new Error('This doctor doesnt exist on the other channel' + docEmailId);
-    }
+
 
     // ==== Create doctor object and marshal to JSON ====
     let doctor = {};
@@ -95,7 +90,7 @@ let Chaincode = class {
     doctor.name = docName;
 
     // === Save doctor to state ===
-    await stub.putState(docName, Buffer.from(JSON.stringify(doctor)));
+    await stub.putState(docEmailId, Buffer.from(JSON.stringify(doctor)));
 
     // ==== Doctor saved. Return success ====
     console.info('- end init doctor');
@@ -105,11 +100,11 @@ let Chaincode = class {
   // initPatient - Onboard Patient
   // ===============================================
   async initPatient(stub, args, thisClass) {
-    if (args.length != 2) {
+    if (args.length != 3) {
       throw new Error('Incorrect number of arguments. Expecting 2');
     }
     // ==== Input sanitation ====
-    console.info('--- start init doctor ---')
+    console.info('--- start init patient ---')
     if (args[0].length <= 0) {
       throw new Error('1st argument must be a non-empty string');
     }
@@ -136,6 +131,19 @@ let Chaincode = class {
       throw new Error('This doctor does not exist: ' + patientDoctor);
     }
 
+    // ==== Check if patient is a verified pariticipant ====
+    let response = await stub.invokeChaincode('cctwo',["readObject",patientEmailId],"verificationchannel");
+
+    if (!response.status==200) {
+      throw new Error('Chaincode invoke to verificationchannel not successful');
+    }
+    else {
+      let obj = JSON.parse(Buffer.from(response.payload.toArrayBuffer()).toString('ascii'));
+      console.log(obj.status);
+      if(obj.status !='VERIFIED'){
+      throw new Error('Patient not verified:'+patientEmailId);}
+    }
+
     // ==== Create patient object and marshal to JSON ====
     let patient = {};
     patient.docType = 'patient';
@@ -143,7 +151,7 @@ let Chaincode = class {
     patient.name = patientName;
     patient.doctor = patientDoctor;
 
-    // === Save doctor to state ===
+    // === Save patient to state ===
     await stub.putState(patientEmailId, Buffer.from(JSON.stringify(patient)));
 
     // ==== Patient saved. Return success ====
@@ -176,19 +184,24 @@ let Chaincode = class {
     }
 
     let consentId = args[0];
-    let patient = args[1].toLowerCase();
-    let consentDocument = args[2].toLowerCase();
+    let patient = args[2].toLowerCase();
+    let doctor = args[1].toLowerCase();
 
     // ==== Check if consent already exists ====
     let consentState = await stub.getState(consentId);
     if (consentState.toString()) {
       throw new Error('This consent already exists: ' + consentId);
     }
+    // ==== Ensure doctor already exists ====
+    let doctorState = await stub.getState(doctor);
+    if (!doctorState.toString()) {
+      throw new Error('This doctor does not exist: ' + doctor);
+    }
 
     // ==== Ensure patient already exists ====
     let patientState = await stub.getState(patient);
-    if (!patientState.toString()) {
-      throw new Error('This patient does not exist: ' + patientDoctor);
+    if (!patientState.toString() && JSON.parse(consentAsBytes.toString()).doctor==doctor) {
+      throw new Error('This patient does not exist: ' + patient);
     }
 
     // ==== Create consent object and marshal to JSON ====
@@ -196,7 +209,8 @@ let Chaincode = class {
     consent.docType = 'consent';
     consent.consentId = consentId;
     consent.patient = patient;
-    consent.consentDocument = consentDocument;
+    consent.doctor = doctor;
+    consent.consentDocument = "this is a consent doc";
     consent.status = 'NEW';
 
     // === Save consent to state ===
@@ -259,10 +273,16 @@ let Chaincode = class {
       throw new Error(jsonResp);
     }
     console.info(consentToUpdate);
-    consentToUpdate.status = 'ACCEPTED'; //change the status to ACCEPTED
 
-    let consentJSONasBytes = Buffer.from(JSON.stringify(consentToUpdate));
-    await stub.putState(consentId, consentJSONasBytes); //rewrite the consent
+    if(consentToUpdate.status=='NEW' && consentToUpdate.patient==patient)
+    {
+        consentToUpdate.status = 'ACCEPTED'; //change the status to ACCEPTED
+        let consentJSONasBytes = Buffer.from(JSON.stringify(consentToUpdate));
+        await stub.putState(consentId, consentJSONasBytes); //rewrite the consent
+    }
+    else {
+        throw new Error('could not update provide consent');
+    }
 
     console.info('- end provideConsent (success)');
   }
@@ -297,11 +317,16 @@ let Chaincode = class {
       throw new Error(jsonResp);
     }
     console.info(consentToUpdate);
-    consentToUpdate.coSignee = doctor;
-    consentToUpdate.status = 'COSIGNED'; //change the status to ACCEPTED
 
-    let consentJSONasBytes = Buffer.from(JSON.stringify(consentToUpdate));
-    await stub.putState(consentId, consentJSONasBytes); //rewrite the consent
+    if(consentToUpdate.status=='ACCEPTED' && consentToUpdate.doctor==doctor)
+    {
+        consentToUpdate.status = 'COSIGNED'; //change the status to COSIGNED
+        let consentJSONasBytes = Buffer.from(JSON.stringify(consentToUpdate));
+        await stub.putState(consentId, consentJSONasBytes); //rewrite the consent
+    }
+    else {
+        throw new Error('could not update provide consent');
+    }
 
     console.info('- end coSignConsent (success)');
   }

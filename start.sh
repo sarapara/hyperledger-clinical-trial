@@ -86,7 +86,6 @@ function networkUp () {
     echo "ERROR !!!! Unable to start network"
     exit 1
   fi
-  # now run the end to end script
   docker exec cli scripts/script.sh $CHANNEL_NAME2 $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $CC_SRC_PATH2 $CC2
   docker exec cli scripts/script.sh $CHANNEL_NAME1 $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $CC_SRC_PATH1 $CC1
 

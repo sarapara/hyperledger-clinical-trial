@@ -133,8 +133,10 @@ instantiateChaincode () {
 chaincodeQuery () {
   PEER=$1
   ORG=$2
+
+
   setGlobals $PEER $ORG
-  EXPECTED_RESULT=$3
+
   echo "===================== Querying on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'...(Org1 = pfizer, Org2 = manipalhospital) ===================== "
   local rc=1
   local starttime=$(date +%s)
@@ -146,7 +148,7 @@ chaincodeQuery () {
      sleep $DELAY
      echo "Attempting to Query peer${PEER}.org${ORG} ...$(($(date +%s)-starttime)) secs"
      set -x
-     peer chaincode query -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["readObject","d1"]}' >&log.txt
+     peer chaincode query -C $CHANNEL_NAME -n $CC_NAME -c "$3" >&log.txt
 	 res=$?
      set +x
      test $res -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
@@ -170,17 +172,18 @@ chaincodeQuery () {
 chaincodeInvoke () {
 	PEER=$1
 	ORG=$2
+	ARGS=$3
 	setGlobals $PEER $ORG
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode invoke -o orderer.consilx.com:7050 -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["initDoctor","d1@mh.org","d1"]}' >&log.txt
+		peer chaincode invoke -o orderer.consilx.com:7050 -C $CHANNEL_NAME -n $CC_NAME -c "$ARGS" >&log.txt
 		res=$?
                 set +x
 	else
                 set -x
-		peer chaincode invoke -o orderer.consilx.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["initDoctor","d1@mh.org","d1"]}' >&log.txt
+		peer chaincode invoke -o orderer.consilx.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n $CC_NAME -c "$ARGS" >&log.txt
 		res=$?
                 set +x
 	fi
@@ -188,6 +191,7 @@ chaincodeInvoke () {
 	verifyResult $res "Invoke execution on peer${PEER}.org${ORG} failed "
 	echo "===================== Invoke transaction on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' is successful ===================== "
 	echo
+
 }
 
 
@@ -215,11 +219,16 @@ if [ "${CHANNEL_NAME}" == "verificationchannel" ]; then
 
 	# Invoke chaincode on peer0.manipalhospital
 	echo "Sending invoke transaction on peer0.manipalhospital..."
-	chaincodeInvoke 0 2
+	chaincodeInvoke 0 2 '{"Args":["initParticipant","p1@gmail.com","John Doe"]}'
+	sleep $DELAY
 
+	# Invoke chaincode on peer0.manipalhospital
+	echo "Sending invoke transaction on peer0.manipalhospital..."
+	chaincodeInvoke 0 2 '{"Args":["verifyParticipant","p1@gmail.com"]}'
+	sleep $DELAY
 	# Query chaincode on peer0.pfizer
 	echo "Querying chaincode on peer0.manipalhospital..."
-	chaincodeQuery 0 2 d1
+	chaincodeQuery 0 2 '{"Args":["readObject","p1@gmail.com"]}'
 elif [ "${CHANNEL_NAME}" == "drugachannel" ]; then
 	## Create channel
 	echo "Creating channel..."
@@ -251,12 +260,28 @@ elif [ "${CHANNEL_NAME}" == "drugachannel" ]; then
 	# instantiateChaincode 0 1
 
 	# Invoke chaincode on peer0.pfizer and peer0.manipalhospital
-	echo "Sending invoke transaction on peer0.pfizer peer0.manipalhospital..."
-	chaincodeInvoke 0 2
+	echo "Add Doctor "
+	chaincodeInvoke 0 2 '{"Args":["initDoctor","d1@mh.org","d1"]}'
+sleep $DELAY
+# Query chaincode on peer0.pfizer
+echo "Querying chaincode on peer0.manipalhospital..."
+chaincodeQuery 0 2 '{"Args":["readObject","d1@mh.org"]}'
 
+	echo "Add Patient"
+	chaincodeInvoke 0 2 '{"Args":["initPatient","p1@gmail.com","John Doe","d1@mh.org"]}'
+sleep $DELAY
+	echo "Setup Consent for Patient"
+	chaincodeInvoke 0 2 '{"Args":["setupConsent","c1","d1@mh.org","p1@gmail.com"]}'
+sleep $DELAY
+	echo "Patient provides consent"
+	chaincodeInvoke 0 2 '{"Args":["provideConsent","c1","p1@gmail.com"]}'
+sleep $DELAY
+	echo "Doctor cosings consent"
+	chaincodeInvoke 0 2 '{"Args":["coSignConsent","c1","d1@mh.org"]}'
+sleep $DELAY
 	# Query chaincode on peer0.pfizer
 	echo "Querying chaincode on peer0.pfizer..."
-	chaincodeQuery 0 2 d1
+	chaincodeQuery 0 2 '{"Args":["readObject","c1"]}'
 else
   echo "===================== Failed!! Unknown channel - \"$CHANNEL_NAME\" ===================== "
   exit 1
